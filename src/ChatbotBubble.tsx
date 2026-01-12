@@ -1,13 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-
-interface ChatbotBubbleProps {
-  config: {
-    botId: string;
-    position?: 'bottom-right' | 'bottom-left';
-    primaryColor?: string;
-    greeting?: string;
-  };
-}
+import type { ChatbotConfig } from './main';
 
 interface Message {
   from: 'user' | 'bot';
@@ -21,27 +13,29 @@ const MOCK_RESPONSES: string[] = [
   "Cảm ơn bạn đã nhắn tin!"
 ];
 
-const ChatbotBubble: React.FC<ChatbotBubbleProps> = ({ config }) => {
+const ChatbotBubble: React.FC<{ config: ChatbotConfig }> = ({ config }) => {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Scroll tự động xuống dưới khi có tin nhắn mới
+  const bubbleSize = config.bubbleSize || 60;
+  const chatWidth = config.chatWidth || 350;
+  const chatHeight = config.chatHeight || 400;
+  const fontSize = config.fontSize || 14;
+  const borderRadius = config.borderRadius || 12;
+  const animationDuration = config.animationDuration || 0.3; // s
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   const sendMessage = (text: string) => {
     if (!text.trim()) return;
-
-    // Thêm tin nhắn người dùng
-    const newMsg: Message = { from: 'user', text };
-    setMessages(prev => [...prev, newMsg]);
+    setMessages(prev => [...prev, { from: 'user', text }]);
     setInput('');
 
-    // Fake bot trả lời sau 1.2s
     setTimeout(() => {
       const botMsg: Message = {
         from: 'bot',
@@ -68,8 +62,8 @@ const ChatbotBubble: React.FC<ChatbotBubbleProps> = ({ config }) => {
         style={{
           position: 'fixed',
           bottom: 20,
-          width: 60,
-          height: 60,
+          width: bubbleSize,
+          height: bubbleSize,
           borderRadius: '50%',
           background: config.primaryColor || '#4f46e5',
           cursor: 'pointer',
@@ -77,7 +71,7 @@ const ChatbotBubble: React.FC<ChatbotBubbleProps> = ({ config }) => {
           justifyContent: 'center',
           alignItems: 'center',
           color: '#fff',
-          fontSize: 30,
+          fontSize: bubbleSize / 2,
           boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
           transition: 'transform 0.2s',
           transform: open ? 'scale(0.95)' : 'scale(1)',
@@ -92,16 +86,16 @@ const ChatbotBubble: React.FC<ChatbotBubbleProps> = ({ config }) => {
         <div
           style={{
             position: 'fixed',
-            bottom: 90,
-            width: 350,
-            height: 400,
+            bottom: bubbleSize + 10,
+            width: chatWidth,
+            height: chatHeight,
             background: '#fff',
-            borderRadius: 12,
+            borderRadius,
             boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
             overflow: 'hidden',
             display: 'flex',
             flexDirection: 'column',
-            animation: 'slideUp 0.3s ease-out',
+            animation: `slideUp ${animationDuration}s ease-out`,
             ...positionStyle
           }}
         >
@@ -112,38 +106,38 @@ const ChatbotBubble: React.FC<ChatbotBubbleProps> = ({ config }) => {
               color: '#fff',
               padding: '10px 16px',
               fontWeight: 'bold',
-              fontSize: 16
+              fontSize: fontSize + 2
             }}
           >
             ChatBot
           </div>
 
-          {/* Messages body */}
+          {/* Messages */}
           <div
             style={{
               flex: 1,
               padding: 16,
               overflowY: 'auto',
-              fontSize: 14,
+              fontSize,
               lineHeight: '1.4',
               display: 'flex',
               flexDirection: 'column',
               gap: 8
             }}
           >
-            {messages.length === 0 && <div>{config.greeting || "Xin chào 👋"}</div>}
+            {messages.length === 0 && <div>{config.greeting || 'Xin chào 👋'}</div>}
             {messages.map((msg, idx) => (
               <div
                 key={idx}
                 style={{
                   alignSelf: msg.from === 'user' ? 'flex-end' : 'flex-start',
-                  background: msg.from === 'user' ? '#4f46e5' : '#eee',
+                  background: msg.from === 'user' ? (config.primaryColor || '#4f46e5') : '#eee',
                   color: msg.from === 'user' ? '#fff' : '#000',
                   padding: '8px 12px',
-                  borderRadius: 12,
+                  borderRadius,
                   maxWidth: '75%',
                   wordWrap: 'break-word',
-                  animation: 'fadeIn 0.3s'
+                  animation: `fadeIn ${animationDuration}s`
                 }}
               >
                 {msg.text}
@@ -164,23 +158,22 @@ const ChatbotBubble: React.FC<ChatbotBubbleProps> = ({ config }) => {
               style={{
                 width: '100%',
                 padding: '8px 12px',
-                borderRadius: 8,
+                borderRadius: borderRadius / 2,
                 border: '1px solid #ccc',
                 outline: 'none',
-                fontSize: 14,
+                fontSize,
               }}
             />
           </div>
         </div>
       )}
 
-      {/* Animation keyframes */}
+      {/* Animation */}
       <style>{`
         @keyframes slideUp {
           0% { opacity: 0; transform: translateY(20px); }
           100% { opacity: 1; transform: translateY(0); }
         }
-
         @keyframes fadeIn {
           0% { opacity: 0; transform: translateY(5px); }
           100% { opacity: 1; transform: translateY(0); }
