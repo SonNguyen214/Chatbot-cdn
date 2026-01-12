@@ -13,6 +13,8 @@ export interface ChatbotConfig {
   chatWindowStyle?: Partial<CSSStyle>; // CSS cho message body
   footerStyle?: Partial<CSSStyle>; // CSS cho input + button
   bubbleStyle?: Partial<CSSStyle>; // CSS cho FAB bubble
+
+  apiHost?: string; // <-- Thêm apiHost
 }
 
 interface CSSStyle {

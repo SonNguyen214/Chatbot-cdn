@@ -11,7 +11,7 @@ export default defineConfig({
       entry: "src/main.tsx",
       name: "Chatbot",
       formats: ["es"],
-      fileName: "chatbot-0.0.4",
+      fileName: "chatbot-0.0.5",
     },
     rollupOptions: {
       external: [],
