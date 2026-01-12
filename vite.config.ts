@@ -1,4 +1,3 @@
-// vite.config.ts
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
@@ -7,13 +6,13 @@ export default defineConfig({
   build: {
     lib: {
       entry: "src/main.tsx",
-      name: "Chatbot",
-      formats: ["es"],
-      fileName: "chatbot",
+      name: "Chatbot", // chỉ dùng khi UMD/IIFE
+      formats: ["es"], // build ESM
+      fileName: "chatbot", // output: chatbot.js
     },
     rollupOptions: {
-      // Bỏ external => bundle React vào
-      // external: ['react', 'react-dom'],   <-- không dùng
+      // **Bỏ external**, React sẽ được bundle vào file
+      // external: ['react', 'react-dom'],   <-- bỏ đi
     },
   },
 });
