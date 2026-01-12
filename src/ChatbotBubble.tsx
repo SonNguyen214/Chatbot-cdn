@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import type { ChatbotConfig } from './types';
 
 interface Message {
-  from: 'user' | 'bot';
+  from: 'user' | 'bot' | 'botLoading';
   text: string;
 }
 
@@ -25,8 +25,13 @@ const ChatbotBubble: React.FC<{ config: ChatbotConfig }> = ({ config }) => {
   const chatHeight = config.chatHeight || 400;
   const fontSize = config.fontSize || 14;
   const borderRadius = config.borderRadius || 12;
-  const animationDuration = config.animationDuration || 0.3; // s
+  const animationDuration = config.animationDuration || 0.3;
+  const theme = config.theme || 'light';
+  const bgColor = theme === 'dark' ? '#1f1f1f' : '#fff';
+  const textColor = theme === 'dark' ? '#eee' : '#000';
+  const bubbleBg = config.primaryColor || '#4f46e5';
 
+  // Scroll auto
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -36,12 +41,20 @@ const ChatbotBubble: React.FC<{ config: ChatbotConfig }> = ({ config }) => {
     setMessages(prev => [...prev, { from: 'user', text }]);
     setInput('');
 
+    // thêm "botLoading" message
+    setMessages(prev => [...prev, { from: 'botLoading', text: '' }]);
+
+    // fake trả lời
     setTimeout(() => {
-      const botMsg: Message = {
-        from: 'bot',
-        text: MOCK_RESPONSES[Math.floor(Math.random() * MOCK_RESPONSES.length)]
-      };
-      setMessages(prev => [...prev, botMsg]);
+      setMessages(prev => {
+        // remove botLoading
+        const filtered = prev.filter(m => m.from !== 'botLoading');
+        const botMsg: Message = {
+          from: 'bot',
+          text: MOCK_RESPONSES[Math.floor(Math.random() * MOCK_RESPONSES.length)]
+        };
+        return [...filtered, botMsg];
+      });
     }, 1200);
   };
 
@@ -65,7 +78,7 @@ const ChatbotBubble: React.FC<{ config: ChatbotConfig }> = ({ config }) => {
           width: bubbleSize,
           height: bubbleSize,
           borderRadius: '50%',
-          background: config.primaryColor || '#4f46e5',
+          background: bubbleBg,
           cursor: 'pointer',
           display: 'flex',
           justifyContent: 'center',
@@ -89,7 +102,8 @@ const ChatbotBubble: React.FC<{ config: ChatbotConfig }> = ({ config }) => {
             bottom: bubbleSize + 10,
             width: chatWidth,
             height: chatHeight,
-            background: '#fff',
+            background: bgColor,
+            color: textColor,
             borderRadius,
             boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
             overflow: 'hidden',
@@ -102,13 +116,23 @@ const ChatbotBubble: React.FC<{ config: ChatbotConfig }> = ({ config }) => {
           {/* Header */}
           <div
             style={{
-              background: config.primaryColor || '#4f46e5',
+              background: bubbleBg,
               color: '#fff',
               padding: '10px 16px',
               fontWeight: 'bold',
-              fontSize: fontSize + 2
+              fontSize: fontSize + 2,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8
             }}
           >
+            {config.botAvatar && (
+              <img
+                src={config.botAvatar}
+                alt="Bot"
+                style={{ width: 30, height: 30, borderRadius: '50%' }}
+              />
+            )}
             ChatBot
           </div>
 
@@ -126,23 +150,56 @@ const ChatbotBubble: React.FC<{ config: ChatbotConfig }> = ({ config }) => {
             }}
           >
             {messages.length === 0 && <div>{config.greeting || 'Xin chào 👋'}</div>}
-            {messages.map((msg, idx) => (
-              <div
-                key={idx}
-                style={{
-                  alignSelf: msg.from === 'user' ? 'flex-end' : 'flex-start',
-                  background: msg.from === 'user' ? (config.primaryColor || '#4f46e5') : '#eee',
-                  color: msg.from === 'user' ? '#fff' : '#000',
-                  padding: '8px 12px',
-                  borderRadius,
-                  maxWidth: '75%',
-                  wordWrap: 'break-word',
-                  animation: `fadeIn ${animationDuration}s`
-                }}
-              >
-                {msg.text}
-              </div>
-            ))}
+            {messages.map((msg, idx) => {
+              if (msg.from === 'botLoading') {
+                return (
+                  <div
+                    key={idx}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      background: '#eee',
+                      padding: '8px 12px',
+                      borderRadius,
+                      maxWidth: '50%',
+                      animation: `fadeIn ${animationDuration}s`
+                    }}
+                  >
+                    {config.botAvatar && (
+                      <img
+                        src={config.botAvatar}
+                        alt="Bot"
+                        style={{ width: 24, height: 24, borderRadius: '50%' }}
+                      />
+                    )}
+                    <div style={{ display: 'flex', gap: 4 }}>
+                      <span className="dot" />
+                      <span className="dot" />
+                      <span className="dot" />
+                    </div>
+                  </div>
+                );
+              }
+
+              return (
+                <div
+                  key={idx}
+                  style={{
+                    alignSelf: msg.from === 'user' ? 'flex-end' : 'flex-start',
+                    background: msg.from === 'user' ? bubbleBg : '#eee',
+                    color: msg.from === 'user' ? '#fff' : '#000',
+                    padding: '8px 12px',
+                    borderRadius,
+                    maxWidth: '75%',
+                    wordWrap: 'break-word',
+                    animation: `fadeIn ${animationDuration}s`
+                  }}
+                >
+                  {msg.text}
+                </div>
+              );
+            })}
             <div ref={messagesEndRef} />
           </div>
 
@@ -168,7 +225,7 @@ const ChatbotBubble: React.FC<{ config: ChatbotConfig }> = ({ config }) => {
         </div>
       )}
 
-      {/* Animation */}
+      {/* Animation & 3-dot loading */}
       <style>{`
         @keyframes slideUp {
           0% { opacity: 0; transform: translateY(20px); }
@@ -177,6 +234,21 @@ const ChatbotBubble: React.FC<{ config: ChatbotConfig }> = ({ config }) => {
         @keyframes fadeIn {
           0% { opacity: 0; transform: translateY(5px); }
           100% { opacity: 1; transform: translateY(0); }
+        }
+        .dot {
+          width: 6px;
+          height: 6px;
+          background-color: #999;
+          border-radius: 50%;
+          display: inline-block;
+          animation: blink 1s infinite;
+        }
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes blink {
+          0%, 80%, 100% { opacity: 0; }
+          40% { opacity: 1; }
         }
       `}</style>
     </>
