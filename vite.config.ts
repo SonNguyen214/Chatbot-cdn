@@ -4,7 +4,7 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   define: {
-    "process.env": {}, // thêm dòng này để React + bundle không crash
+    "process.env": {},
   },
   build: {
     lib: {
@@ -14,7 +14,7 @@ export default defineConfig({
       fileName: "chatbot2",
     },
     rollupOptions: {
-      external: [], // bundle React + ReactDOM
+      external: [],
     },
   },
 });
