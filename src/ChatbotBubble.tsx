@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import type { ChatbotConfig } from './main';
+import type { ChatbotConfig } from './types';
 
 interface Message {
   from: 'user' | 'bot';
