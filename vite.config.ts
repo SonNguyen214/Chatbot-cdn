@@ -11,7 +11,7 @@ export default defineConfig({
       entry: "src/main.tsx",
       name: "Chatbot",
       formats: ["es"],
-      fileName: "chatbot",
+      fileName: "chatbot2",
     },
     rollupOptions: {
       external: [], // bundle React + ReactDOM
