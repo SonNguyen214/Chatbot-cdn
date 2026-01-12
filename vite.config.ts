@@ -8,7 +8,7 @@ export default defineConfig({
       entry: "src/main.tsx", // entry widget
       name: "Chatbot", // chỉ dùng khi UMD/IIFE
       formats: ["es"], // build ESM
-      fileName: "chatbot",
+      fileName: "chatbot1",
     },
     rollupOptions: {
       // ⚠ Không external React nữa
