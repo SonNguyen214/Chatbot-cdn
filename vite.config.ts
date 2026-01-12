@@ -5,14 +5,14 @@ export default defineConfig({
   plugins: [react()],
   build: {
     lib: {
-      entry: "src/main.tsx",
+      entry: "src/main.tsx", // entry widget
       name: "Chatbot", // chỉ dùng khi UMD/IIFE
       formats: ["es"], // build ESM
-      fileName: "chatbot", // output: chatbot.js
+      fileName: "chatbot",
     },
     rollupOptions: {
-      // **Bỏ external**, React sẽ được bundle vào file
-      // external: ['react', 'react-dom'],   <-- bỏ đi
+      // ⚠ Không external React nữa
+      external: [], // bỏ tất cả external
     },
   },
 });
