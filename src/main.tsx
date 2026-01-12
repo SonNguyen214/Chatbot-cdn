@@ -8,16 +8,7 @@ export interface ChatbotConfig {
   greeting?: string
 }
 
-declare global {
-  interface Window {
-    Chatbot: {
-      init: (config: ChatbotConfig) => void
-    }
-  }
-}
-
-
-function init(config: ChatbotConfig) {
+export function init(config: ChatbotConfig) {
   const container = document.createElement('div')
   container.id = 'chatbot-widget-root'
   document.body.appendChild(container)
@@ -26,5 +17,3 @@ function init(config: ChatbotConfig) {
     <ChatbotBubble config={config} />
   )
 }
-
-window.Chatbot = { init }
