@@ -3,16 +3,18 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
+  define: {
+    "process.env": {}, // thêm dòng này để React + bundle không crash
+  },
   build: {
     lib: {
-      entry: "src/main.tsx", // entry widget
-      name: "Chatbot", // chỉ dùng khi UMD/IIFE
-      formats: ["es"], // build ESM
-      fileName: "chatbot1",
+      entry: "src/main.tsx",
+      name: "Chatbot",
+      formats: ["es"],
+      fileName: "chatbot",
     },
     rollupOptions: {
-      // ⚠ Không external React nữa
-      external: [], // bỏ tất cả external
+      external: [], // bundle React + ReactDOM
     },
   },
 });
