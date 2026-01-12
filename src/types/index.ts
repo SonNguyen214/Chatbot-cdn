@@ -1,14 +1,27 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface ChatbotConfig {
   botId: string;
   greeting?: string;
   position?: "bottom-right" | "bottom-left";
-  primaryColor?: string; // bubble & header
-  bubbleSize?: number; // px
-  chatWidth?: number; // px
-  chatHeight?: number; // px
-  fontSize?: number; // px
-  borderRadius?: number; // px
-  animationDuration?: number; // s
-  theme?: "light" | "dark"; // background theme
-  botAvatar?: string; // URL avatar bot
+
+  theme?: "light" | "dark";
+
+  fabIcon?: string; // icon bubble
+  botAvatar?: string; // avatar bot
+
+  headerStyle?: Partial<CSSStyle>; // CSS cho header
+  chatWindowStyle?: Partial<CSSStyle>; // CSS cho message body
+  footerStyle?: Partial<CSSStyle>; // CSS cho input + button
+  bubbleStyle?: Partial<CSSStyle>; // CSS cho FAB bubble
+}
+
+interface CSSStyle {
+  width?: string | number;
+  height?: string | number;
+  fontSize?: number;
+  borderRadius?: number;
+  background?: string;
+  color?: string;
+  padding?: string | number;
+  [key: string]: any;
 }

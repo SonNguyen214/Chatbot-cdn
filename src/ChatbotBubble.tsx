@@ -6,7 +6,7 @@ interface Message {
   text: string;
 }
 
-const MOCK_RESPONSES: string[] = [
+const MOCK_RESPONSES = [
   "Xin chào! 👋 Tôi có thể giúp gì cho bạn?",
   "Bạn có muốn tìm hiểu về sản phẩm của chúng tôi không?",
   "Chúng tôi luôn sẵn sàng hỗ trợ bạn!",
@@ -20,18 +20,12 @@ const ChatbotBubble: React.FC<{ config: ChatbotConfig }> = ({ config }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const bubbleSize = config.bubbleSize || 60;
-  const chatWidth = config.chatWidth || 350;
-  const chatHeight = config.chatHeight || 400;
-  const fontSize = config.fontSize || 14;
-  const borderRadius = config.borderRadius || 12;
-  const animationDuration = config.animationDuration || 0.3;
   const theme = config.theme || 'light';
   const bgColor = theme === 'dark' ? '#1f1f1f' : '#fff';
   const textColor = theme === 'dark' ? '#eee' : '#000';
-  const bubbleBg = config.primaryColor || '#4f46e5';
+  const bubbleBg = config.bubbleStyle?.background || '#4f46e5';
+  const bubbleSize = config.bubbleStyle?.width as number || 60;
 
-  // Scroll auto
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -40,14 +34,9 @@ const ChatbotBubble: React.FC<{ config: ChatbotConfig }> = ({ config }) => {
     if (!text.trim()) return;
     setMessages(prev => [...prev, { from: 'user', text }]);
     setInput('');
-
-    // thêm "botLoading" message
     setMessages(prev => [...prev, { from: 'botLoading', text: '' }]);
-
-    // fake trả lời
     setTimeout(() => {
       setMessages(prev => {
-        // remove botLoading
         const filtered = prev.filter(m => m.from !== 'botLoading');
         const botMsg: Message = {
           from: 'bot',
@@ -69,7 +58,7 @@ const ChatbotBubble: React.FC<{ config: ChatbotConfig }> = ({ config }) => {
 
   return (
     <>
-      {/* Bubble icon */}
+      {/* FAB bubble */}
       <div
         onClick={() => setOpen(!open)}
         style={{
@@ -77,53 +66,54 @@ const ChatbotBubble: React.FC<{ config: ChatbotConfig }> = ({ config }) => {
           bottom: 20,
           width: bubbleSize,
           height: bubbleSize,
-          borderRadius: '50%',
+          borderRadius: config.bubbleStyle?.borderRadius || '50%',
           background: bubbleBg,
           cursor: 'pointer',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          color: '#fff',
-          fontSize: bubbleSize / 2,
+          fontSize: (config.bubbleStyle?.fontSize || 30),
           boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
           transition: 'transform 0.2s',
           transform: open ? 'scale(0.95)' : 'scale(1)',
-          ...positionStyle
+          ...positionStyle,
+          ...config.bubbleStyle
         }}
       >
-        💬
+        {config.fabIcon || '💬'}
       </div>
 
-      {/* Chat window */}
       {open && (
         <div
           style={{
             position: 'fixed',
             bottom: bubbleSize + 10,
-            width: chatWidth,
-            height: chatHeight,
-            background: bgColor,
+            width: config.chatWindowStyle?.width || 350,
+            height: config.chatWindowStyle?.height || 400,
+            background: config.chatWindowStyle?.background || bgColor,
             color: textColor,
-            borderRadius,
+            borderRadius: config.chatWindowStyle?.borderRadius || 12,
             boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
             overflow: 'hidden',
             display: 'flex',
             flexDirection: 'column',
-            animation: `slideUp ${animationDuration}s ease-out`,
-            ...positionStyle
+            animation: `slideUp 0.3s ease-out`,
+            ...positionStyle,
+            ...config.chatWindowStyle
           }}
         >
           {/* Header */}
           <div
             style={{
-              background: bubbleBg,
-              color: '#fff',
-              padding: '10px 16px',
+              background: config.headerStyle?.background || '#4f46e5',
+              color: config.headerStyle?.color || '#fff',
+              padding: config.headerStyle?.padding || '10px 16px',
+              fontSize: config.headerStyle?.fontSize || 16,
               fontWeight: 'bold',
-              fontSize: fontSize + 2,
               display: 'flex',
               alignItems: 'center',
-              gap: 8
+              gap: 8,
+              ...config.headerStyle
             }}
           >
             {config.botAvatar && (
@@ -140,115 +130,76 @@ const ChatbotBubble: React.FC<{ config: ChatbotConfig }> = ({ config }) => {
           <div
             style={{
               flex: 1,
-              padding: 16,
+              padding: config.chatWindowStyle?.padding || 16,
               overflowY: 'auto',
-              fontSize,
-              lineHeight: '1.4',
               display: 'flex',
               flexDirection: 'column',
-              gap: 8
+              gap: 8,
+              fontSize: config.chatWindowStyle?.fontSize || 14,
+              ...config.chatWindowStyle
             }}
           >
-            {messages.length === 0 && <div>{config.greeting || 'Xin chào 👋'}</div>}
             {messages.map((msg, idx) => {
-              if (msg.from === 'botLoading') {
-                return (
-                  <div
-                    key={idx}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 8,
-                      background: '#eee',
-                      padding: '8px 12px',
-                      borderRadius,
-                      maxWidth: '50%',
-                      animation: `fadeIn ${animationDuration}s`
-                    }}
-                  >
-                    {config.botAvatar && (
-                      <img
-                        src={config.botAvatar}
-                        alt="Bot"
-                        style={{ width: 24, height: 24, borderRadius: '50%' }}
-                      />
-                    )}
-                    <div style={{ display: 'flex', gap: 4 }}>
-                      <span className="dot" />
-                      <span className="dot" />
-                      <span className="dot" />
-                    </div>
-                  </div>
-                );
-              }
-
+              const isBot = msg.from === 'bot' || msg.from === 'botLoading';
               return (
-                <div
-                  key={idx}
-                  style={{
-                    alignSelf: msg.from === 'user' ? 'flex-end' : 'flex-start',
+                <div key={idx} style={{ display: 'flex', gap: 8, alignSelf: msg.from === 'user' ? 'flex-end' : 'flex-start', justifyContent: msg.from === 'user' ? 'flex-end' : 'flex-start' }}>
+                  {isBot && config.botAvatar && <img src={config.botAvatar} style={{ width: 24, height: 24, borderRadius: '50%' }} />}
+                  <div style={{
                     background: msg.from === 'user' ? bubbleBg : '#eee',
                     color: msg.from === 'user' ? '#fff' : '#000',
                     padding: '8px 12px',
-                    borderRadius,
+                    borderRadius: 12,
                     maxWidth: '75%',
                     wordWrap: 'break-word',
-                    animation: `fadeIn ${animationDuration}s`
-                  }}
-                >
-                  {msg.text}
+                    ...config.chatWindowStyle
+                  }}>
+                    {msg.from === 'botLoading' ? '...' : msg.text}
+                  </div>
                 </div>
               );
             })}
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
-          <div style={{ padding: 10, borderTop: '1px solid #eee' }}>
+          {/* Footer input + button */}
+          <div style={{ display: 'flex', gap: 6, padding: 10, borderTop: '1px solid #eee', ...config.footerStyle }}>
             <input
               ref={inputRef}
-              type="text"
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Nhập tin nhắn..."
               style={{
-                width: '100%',
-                padding: '8px 12px',
-                borderRadius: borderRadius / 2,
+                flex: 1,
+                padding: 8,
+                borderRadius: 8,
                 border: '1px solid #ccc',
-                outline: 'none',
-                fontSize,
+                fontSize: 14,
+                ...config.footerStyle
               }}
             />
+            <button
+              onClick={() => sendMessage(input)}
+              style={{
+                padding: '8px 12px',
+                background: bubbleBg,
+                color: '#fff',
+                border: 'none',
+                borderRadius: 8,
+                cursor: 'pointer',
+                ...config.footerStyle
+              }}
+            >
+              ➤
+            </button>
           </div>
         </div>
       )}
 
-      {/* Animation & 3-dot loading */}
       <style>{`
         @keyframes slideUp {
           0% { opacity: 0; transform: translateY(20px); }
           100% { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeIn {
-          0% { opacity: 0; transform: translateY(5px); }
-          100% { opacity: 1; transform: translateY(0); }
-        }
-        .dot {
-          width: 6px;
-          height: 6px;
-          background-color: #999;
-          border-radius: 50%;
-          display: inline-block;
-          animation: blink 1s infinite;
-        }
-        .dot:nth-child(2) { animation-delay: 0.2s; }
-        .dot:nth-child(3) { animation-delay: 0.4s; }
-
-        @keyframes blink {
-          0%, 80%, 100% { opacity: 0; }
-          40% { opacity: 1; }
         }
       `}</style>
     </>
