@@ -1,6 +1,7 @@
 import ReactDOM from "react-dom/client";
-import ChatbotBubble from "./ChatbotBubble";
+import ChatbotBubble from "./components/ChatbotBubble";
 import type { ChatbotConfig } from "./types";
+import ChatbotPopup from "./components/ChatBotPopup";
 
 export function init(config: ChatbotConfig) {
   const container = document.createElement("div");
@@ -10,10 +11,21 @@ export function init(config: ChatbotConfig) {
   ReactDOM.createRoot(container).render(<ChatbotBubble config={config} />);
 }
 
+export function initPopup(config: ChatbotConfig) {
+  const container = document.createElement("div");
+  container.id = "chatbot-widget-root";
+  document.body.appendChild(container);
+
+  ReactDOM.createRoot(container).render(<ChatbotPopup config={config} />);
+}
+
 // gắn ra window cho CDN ESM/iife
 declare global {
   interface Window {
-    Chatbot: { init: (config: ChatbotConfig) => void };
+    Chatbot: {
+      init: (config: ChatbotConfig) => void;
+      initPopup: (config: ChatbotConfig) => void;
+    };
   }
 }
-window.Chatbot = { init };
+window.Chatbot = { init, initPopup };
