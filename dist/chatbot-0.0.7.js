@@ -55122,7 +55122,7 @@ const QG = () => {
   "Cảm ơn bạn đã nhắn tin!"
 ], YD = ({ config: t }) => {
   const n = Pe.useRef(null), l = Pe.useRef(null), [u, s] = Pe.useState([
-    { from: "bot", text: "Xin chào 🖐" }
+    { from: "bot", text: t?.greeting || "Xin chào 🖐" }
   ]), [h, d] = Pe.useState(""), g = t.theme || "light", v = g === "dark" ? "#1f1f1f" : "#fff", b = g === "dark" ? "#eee" : "#000", x = t?.primaryColor || "#ffc600", E = t.bubbleStyle?.height || 60;
   Pe.useEffect(() => {
     l.current?.scrollIntoView({ behavior: "smooth" });

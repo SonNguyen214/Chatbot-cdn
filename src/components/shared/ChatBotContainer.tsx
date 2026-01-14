@@ -28,7 +28,7 @@ export const ChatBotContainer = ({ config }: IProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [messages, setMessages] = useState<Message[]>([
-    { from: "bot", text: "Xin chào 🖐" },
+    { from: "bot", text: config?.greeting || "Xin chào 🖐" },
   ]);
   const [input, setInput] = useState("");
 
