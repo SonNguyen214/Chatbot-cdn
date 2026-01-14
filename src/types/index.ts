@@ -14,6 +14,7 @@ export interface ChatbotConfig {
   bubbleStyle?: Partial<CSSStyle>; // CSS cho FAB bubble
   apiHost?: string; // <-- Thêm apiHost
   autoShowDelay?: number;
+  fontFamily?: string;
 }
 
 interface CSSStyle {

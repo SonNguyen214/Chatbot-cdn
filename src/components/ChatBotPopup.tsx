@@ -6,10 +6,12 @@ import ChatBotContainer from "./shared/ChatBotContainer";
 const ChatbotPopup: React.FC<{ config: ChatbotConfig }> = ({ config }) => {
   const [open, setOpen] = useState(false);
 
+  const delayTime = config?.autoShowDelay ?? 5000;
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       setOpen(true);
-    }, config?.autoShowDelay);
+    }, delayTime);
 
     return () => clearTimeout(timeout);
   }, []);

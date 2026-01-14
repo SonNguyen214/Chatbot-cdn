@@ -5,7 +5,7 @@ import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import { motion, AnimatePresence } from "framer-motion";
-import TypingDots from "../../TypingDots";
+import TypingDots from "./TypingDots";
 
 const MOCK_RESPONSES = [
   "Xin chào! 👋 Tôi có thể giúp gì cho bạn?",
@@ -24,13 +24,15 @@ interface IProps {
 }
 
 export const ChatBotContainer = ({ config }: IProps) => {
+  const initMessage: Message = {
+    from: "bot",
+    text: config?.greeting || "Xin chào 🖐",
+  };
   const inputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const [messages, setMessages] = useState<Message[]>([
-    { from: "bot", text: config?.greeting || "Xin chào 🖐" },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([initMessage]);
   const [input, setInput] = useState("");
+  const [showConfirmReset, setShowConfirmReset] = useState(false);
 
   const theme = config.theme || "light";
   const bgColor = theme === "dark" ? "#1f1f1f" : "#fff";
@@ -96,7 +98,7 @@ export const ChatBotContainer = ({ config }: IProps) => {
       transition={{ duration: 0.3 }}
       style={{
         position: "fixed",
-        bottom: bubbleHeight + 15,
+        bottom: bubbleHeight + 10,
         width: config.chatWindowStyle?.width || 400,
         height: config.chatWindowStyle?.height || 500,
         background: config.chatWindowStyle?.background || bgColor,
@@ -106,6 +108,7 @@ export const ChatBotContainer = ({ config }: IProps) => {
         overflow: "hidden",
         display: "flex",
         flexDirection: "column",
+        fontFamily: config?.fontFamily || "'Roboto', sans-serif",
         zIndex: 999999,
         ...positionStyle,
         ...config.chatWindowStyle,
@@ -122,21 +125,35 @@ export const ChatBotContainer = ({ config }: IProps) => {
           fontWeight: "bold",
           display: "flex",
           alignItems: "center",
+          justifyContent: "space-between",
           gap: 8,
           ...config.headerStyle,
         }}
       >
-        {config.botAvatar && (
-          <img
-            className="chat-avatar"
-            src={config.botAvatar}
-            alt="Bot"
-            style={{ width: 40, height: 40, borderRadius: "50%" }}
-          />
-        )}
-        {config?.botName || "VnpostBot"}
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          {config.botAvatar && (
+            <img
+              className="chat-avatar"
+              src={config.botAvatar}
+              alt="Bot"
+              style={{ width: 40, height: 40, borderRadius: "50%" }}
+            />
+          )}
+          <span>{config?.botName || "VnpostBot"}</span>
+        </div>
+        <span
+          onClick={() => setShowConfirmReset(true)}
+          style={{
+            color: textColor,
+            fontSize: "25px",
+            fontWeight: 500,
+            transform: "rotate(-130deg)",
+            cursor: "pointer",
+          }}
+        >
+          ↺
+        </span>
       </div>
-
       {/* Messages */}
       <div
         className="message-wrapper"
@@ -166,6 +183,8 @@ export const ChatBotContainer = ({ config }: IProps) => {
                   alignSelf: msg.from === "user" ? "flex-end" : "flex-start",
                   justifyContent:
                     msg.from === "user" ? "flex-end" : "flex-start",
+                  maxWidth: "100%",
+                  width: "100%",
                 }}
               >
                 {isBot && config.botAvatar && (
@@ -182,7 +201,7 @@ export const ChatBotContainer = ({ config }: IProps) => {
                     color: msg.from === "user" ? textColor : "#000",
                     padding: "0px 12px",
                     borderRadius: 12,
-                    maxWidth: "60%",
+                    maxWidth: "63%",
                     wordWrap: "break-word",
                     minHeight: "30px",
                     wordSpacing: "1.2px",
@@ -220,46 +239,166 @@ export const ChatBotContainer = ({ config }: IProps) => {
       <div
         className="footer"
         style={{
-          display: "flex",
-          gap: 6,
-          padding: 10,
+          padding: "10px 16px",
+          paddingBottom: "8px",
           borderTop: "1px solid #eee",
           ...config.footerStyle,
         }}
       >
-        <input
-          ref={inputRef}
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Nhập tin nhắn..."
+        <div
           style={{
-            flex: 1,
+            border: "1px solid #ccc",
+            height: "30px",
             padding: 8,
             borderRadius: 8,
-            border: "1px solid #ccc",
-            fontSize: 14,
-            height: "25px",
-            outline: `1px solid ${primaryColor}`,
-            ...config.footerStyle,
-          }}
-        />
-        <button
-          className="send-button"
-          onClick={() => sendMessage(input)}
-          style={{
-            padding: "8px 12px",
-            background: primaryColor,
-            color: textColor,
-            border: "none",
-            borderRadius: 8,
-            cursor: "pointer",
+            alignItems: "center",
+            display: "flex",
+            justifyContent: "space-between",
+            position: "relative",
             ...config.footerStyle,
           }}
         >
-          ➤
-        </button>
+          <input
+            ref={inputRef}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Nhập tin nhắn..."
+            style={{
+              fontSize: 14,
+              border: "none",
+              outline: `none`,
+              width: "85%",
+              padding: 10,
+            }}
+          />
+          <button
+            className="send-button"
+            onClick={() => sendMessage(input)}
+            style={{
+              position: "absolute",
+              right: 4,
+              bottom: 3,
+              padding: "7px 11px",
+              background: primaryColor,
+              color: "#fff",
+              border: "none",
+              borderRadius: 8,
+              fontSize: "20px",
+              cursor: "pointer",
+              ...config.footerStyle,
+            }}
+          >
+            ➤
+          </button>
+        </div>
       </div>
+      <div
+        style={{
+          width: "100%",
+          textAlign: "center",
+          paddingBottom: "8px",
+          fontSize: "12px",
+          color: "#A59C96",
+        }}
+      >
+        ⚡ by MiPo
+      </div>
+
+      {/* Popup reset  */}
+      {showConfirmReset && (
+        <motion.div
+          style={{
+            width: "100%",
+            padding: "12px 0",
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            right: 0,
+            left: 0,
+            color: textColor,
+          }}
+        >
+          <div
+            className="overlay"
+            onClick={() => setShowConfirmReset(false)}
+            style={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
+              backgroundColor: "rgba(0,0,0,0.2)",
+              textAlign: "center",
+            }}
+          ></div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 30 }}
+            transition={{ duration: 0.3 }}
+            style={{
+              backgroundColor: "white",
+              position: "absolute",
+              zIndex: 1,
+              textAlign: "center",
+              width: "100%",
+              bottom: 0,
+              paddingBottom: "16px",
+            }}
+          >
+            <div
+              className="title"
+              style={{
+                margin: "16px auto",
+                fontSize: "16px",
+              }}
+            >
+              Tạo đoạn hội thoại mới?
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
+              <button
+                style={{
+                  height: "40px",
+                  borderRadius: "8px",
+                  textAlign: "center",
+                  width: "80%",
+                  cursor: "pointer",
+                  border: `1px solid ${primaryColor}`,
+                  backgroundColor: primaryColor,
+                }}
+                onClick={() => {
+                  setMessages([initMessage]);
+                  setShowConfirmReset(false);
+                }}
+              >
+                Tạo mới
+              </button>
+              <button
+                style={{
+                  height: "40px",
+                  borderRadius: "8px",
+                  textAlign: "center",
+                  width: "80%",
+                  cursor: "pointer",
+                  border: `1px solid gray`,
+                }}
+                onClick={() => setShowConfirmReset(false)}
+              >
+                Huỷ
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
     </motion.div>
   );
 };

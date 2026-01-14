@@ -6,7 +6,13 @@ const TypingDots: React.FC = () => {
   };
 
   return (
-    <div style={{ display: "flex", gap: 4, alignItems: "flex-end" }}>
+    <div
+      style={{
+        display: "flex",
+        gap: 4,
+        alignItems: "flex-end",
+      }}
+    >
       {[0, 1, 2].map((i) => (
         <motion.div
           key={i}
