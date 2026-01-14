@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { ChatbotConfig } from "../../types";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
@@ -79,6 +79,10 @@ export const ChatBotContainer = ({ config }: IProps) => {
       });
     }
   };
+
+  const isLoading = useMemo(() => {
+    return messages?.some((msg) => msg.from === "botLoading");
+  }, [messages]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") sendMessage(input);
@@ -163,7 +167,7 @@ export const ChatBotContainer = ({ config }: IProps) => {
           overflowY: "auto",
           display: "flex",
           flexDirection: "column",
-          gap: 8,
+          gap: 12,
           fontSize: config.chatWindowStyle?.fontSize || 14,
         }}
       >
@@ -255,13 +259,14 @@ export const ChatBotContainer = ({ config }: IProps) => {
             display: "flex",
             justifyContent: "space-between",
             position: "relative",
+            opacity: isLoading ? 0.6 : 1,
             ...config.footerStyle,
           }}
         >
           <input
             ref={inputRef}
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => setInput(isLoading ? "" : e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Nhập tin nhắn..."
             style={{
@@ -270,6 +275,7 @@ export const ChatBotContainer = ({ config }: IProps) => {
               outline: `none`,
               width: "85%",
               padding: 10,
+              cursor: isLoading ? "not-allowed" : "text",
             }}
           />
           <button
