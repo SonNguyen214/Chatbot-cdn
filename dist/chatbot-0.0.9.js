@@ -55329,8 +55329,7 @@ const QG = () => {
               {
                 style: {
                   border: "1px solid #ccc",
-                  height: "30px",
-                  padding: 8,
+                  padding: 15,
                   borderRadius: 8,
                   alignItems: "center",
                   display: "flex",
@@ -55353,7 +55352,6 @@ const QG = () => {
                         border: "none",
                         outline: "none",
                         width: "85%",
-                        padding: 10,
                         cursor: j ? "not-allowed" : "text"
                       }
                     }
@@ -55366,7 +55364,8 @@ const QG = () => {
                       style: {
                         position: "absolute",
                         right: 4,
-                        bottom: 3,
+                        top: "50%",
+                        transform: "translateY(-50%)",
                         padding: "7px 11px",
                         background: A,
                         color: "#fff",

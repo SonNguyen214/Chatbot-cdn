@@ -252,8 +252,7 @@ export const ChatBotContainer = ({ config }: IProps) => {
         <div
           style={{
             border: "1px solid #ccc",
-            height: "30px",
-            padding: 8,
+            padding: 15,
             borderRadius: 8,
             alignItems: "center",
             display: "flex",
@@ -274,7 +273,6 @@ export const ChatBotContainer = ({ config }: IProps) => {
               border: "none",
               outline: `none`,
               width: "85%",
-              padding: 10,
               cursor: isLoading ? "not-allowed" : "text",
             }}
           />
@@ -284,7 +282,8 @@ export const ChatBotContainer = ({ config }: IProps) => {
             style={{
               position: "absolute",
               right: 4,
-              bottom: 3,
+              top: "50%",
+              transform: "translateY(-50%)",
               padding: "7px 11px",
               background: primaryColor,
               color: "#fff",
