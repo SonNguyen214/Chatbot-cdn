@@ -28,7 +28,7 @@ export const ChatBotContainer = ({ config }: IProps) => {
     from: "bot",
     text: config?.greeting || "Xin chào 🖐",
   };
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<Message[]>([initMessage]);
   const [input, setInput] = useState("");
@@ -84,10 +84,6 @@ export const ChatBotContainer = ({ config }: IProps) => {
     return messages?.some((msg) => msg?.from === "botLoading");
   }, [messages]);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") sendMessage(input);
-  };
-
   const positionStyle =
     config.position === "bottom-left"
       ? { left: 20, right: "auto" }
@@ -103,19 +99,19 @@ export const ChatBotContainer = ({ config }: IProps) => {
       style={{
         position: "fixed",
         bottom: bubbleHeight + 10,
-        width: config.chatWindowStyle?.width || 400,
-        height: config.chatWindowStyle?.height || 500,
-        background: config.chatWindowStyle?.background || bgColor,
-        color: textColor,
-        borderRadius: config.chatWindowStyle?.borderRadius || 12,
-        boxShadow: `0 8px 24px rgba(243, 209, 56, 0.2)`,
+        width: config?.width || 400,
+        height: config?.height || 600,
+        background: config?.background || bgColor,
+        color: config?.color ?? textColor,
+        borderRadius: config?.borderRadius || 8,
+        boxShadow: `0 8px 24px ${config?.primaryColor}`,
         overflow: "hidden",
         display: "flex",
         flexDirection: "column",
         fontFamily: config?.fontFamily || "'Roboto', sans-serif",
         zIndex: 999999,
+        border: "1px solid #e3e3e3",
         ...positionStyle,
-        ...config.chatWindowStyle,
       }}
     >
       {/* Header */}
@@ -123,7 +119,7 @@ export const ChatBotContainer = ({ config }: IProps) => {
         className="chat-header"
         style={{
           background: config.headerStyle?.background || primaryColor,
-          color: config.headerStyle?.color || textColor,
+          color: config.headerStyle?.color || "#333",
           padding: config.headerStyle?.padding || "10px 16px",
           fontSize: config.headerStyle?.fontSize || 18,
           fontWeight: "bold",
@@ -148,7 +144,7 @@ export const ChatBotContainer = ({ config }: IProps) => {
         <span
           onClick={() => setShowConfirmReset(true)}
           style={{
-            color: textColor,
+            color: config.headerStyle?.color ?? "#333",
             fontSize: "25px",
             fontWeight: 500,
             transform: "rotate(-130deg)",
@@ -169,8 +165,33 @@ export const ChatBotContainer = ({ config }: IProps) => {
           flexDirection: "column",
           gap: 12,
           fontSize: config.chatWindowStyle?.fontSize || 14,
+          ...config?.chatWindowStyle,
         }}
       >
+        <div
+          className="avatar-window"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+            gap: 12,
+          }}
+        >
+          <img
+            className="avatar-in-window"
+            src={config.botAvatar}
+            alt="Bot"
+            style={{ width: 75, height: 60, borderRadius: "50%" }}
+          />
+          <p
+            className="name-in-window"
+            style={{ fontSize: 16, fontWeight: 600 }}
+          >
+            {config?.botName}
+          </p>
+        </div>
+
         <AnimatePresence initial={false}>
           {messages.map((msg, idx) => {
             const isBot = msg?.from === "bot" || msg?.from === "botLoading";
@@ -195,16 +216,22 @@ export const ChatBotContainer = ({ config }: IProps) => {
                   <img
                     className="message-avatar"
                     src={config.botAvatar}
-                    style={{ width: 24, height: 24, borderRadius: "50%" }}
+                    style={{ width: 30, height: 30, borderRadius: "50%" }}
                   />
                 )}
                 <div
                   className="message-content"
                   style={{
-                    background: msg?.from === "user" ? primaryColor : "#eee",
-                    color: msg?.from === "user" ? textColor : "#000",
+                    background:
+                      msg?.from === "user"
+                        ? config.chatWindowStyle?.background ?? "#ffeba6"
+                        : "#eee",
+                    color:
+                      msg?.from === "user"
+                        ? config.chatWindowStyle?.color ?? "#333"
+                        : "#000",
                     padding: "0px 12px",
-                    borderRadius: 12,
+                    borderRadius: 8,
                     maxWidth: "63%",
                     wordWrap: "break-word",
                     minHeight: "30px",
@@ -240,71 +267,107 @@ export const ChatBotContainer = ({ config }: IProps) => {
         </AnimatePresence>
         <div ref={messagesEndRef} />
       </div>
+
       {/* Footer input + button */}
       <div
         className="footer"
         style={{
           padding: "10px 16px",
-          paddingBottom: "8px",
+          paddingBottom: "4px",
           borderTop: "1px solid #eee",
           ...config.footerStyle,
         }}
       >
-        <div
+        <motion.div
+          whileHover={{ border: `1px solid ${primaryColor}` }}
+          whileFocus={{ border: `1px solid ${primaryColor}` }}
           style={{
             border: "1px solid #ccc",
             borderRadius: 8,
-            alignItems: "center",
             display: "flex",
-            justifyContent: "space-between",
+            alignItems: "center",
+            backgroundColor: "#fff",
             position: "relative",
             opacity: isLoading ? 0.6 : 1,
-            ...config.footerStyle,
+            padding: 4,
+            ...config.footerStyle?.inputStyle,
           }}
         >
-          <input
+          <textarea
             ref={inputRef}
             value={input}
-            onChange={(e) => setInput(isLoading ? "" : e.target.value)}
-            onKeyDown={handleKeyDown}
+            onChange={(e) => !isLoading && setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault(); // Enter bình thường gửi tin, Shift+Enter xuống dòng
+                sendMessage(input);
+              }
+            }}
             placeholder="Nhập tin nhắn..."
             style={{
               fontSize: 14,
-              borderRadius: 8,
               border: "none",
-              outline: `none`,
-              padding: 15,
+              outline: "none",
+              padding: 10,
+              borderRadius: 8,
+              resize: "none",
+              overflow: "auto",
+              maxHeight: `20%`,
               width: "85%",
-              cursor: isLoading ? "not-allowed" : "text",
+              cursor: "text",
             }}
           />
+
           <button
             className="send-button"
-            onClick={() => sendMessage(input)}
+            onClick={() => !isLoading && sendMessage(input)}
             style={{
               position: "absolute",
-              right: 4,
+              right: 8,
               top: "50%",
               transform: "translateY(-50%)",
-              padding: "7px 11px",
-              background: primaryColor,
-              color: "#fff",
+              background: "transparent",
+              color: primaryColor,
               border: "none",
               borderRadius: 8,
-              fontSize: "20px",
-              cursor: "pointer",
-              ...config.footerStyle,
+              fontSize: "23px",
+              cursor: isLoading ? "wait" : "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              ...config.footerStyle?.iconStyle,
             }}
           >
-            ➤
+            {isLoading ? (
+              <div
+                style={{
+                  width: 20,
+                  height: 20,
+                  border: "3px solid #ccc",
+                  borderTop: `3px solid ${primaryColor}`,
+                  borderRadius: "50%",
+                  animation: "spin 1s linear infinite",
+                }}
+              />
+            ) : (
+              "➤"
+            )}
           </button>
-        </div>
+
+          <style>{`
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  `}</style>
+        </motion.div>
       </div>
+
       <div
         style={{
           width: "100%",
           textAlign: "center",
-          paddingBottom: "8px",
+          paddingBottom: "6px",
           fontSize: "12px",
           color: "#A59C96",
         }}
@@ -360,6 +423,7 @@ export const ChatBotContainer = ({ config }: IProps) => {
               style={{
                 margin: "16px auto",
                 fontSize: "16px",
+                color: "#000",
               }}
             >
               Tạo đoạn hội thoại mới?
@@ -381,6 +445,7 @@ export const ChatBotContainer = ({ config }: IProps) => {
                   cursor: "pointer",
                   border: `1px solid ${primaryColor}`,
                   backgroundColor: primaryColor,
+                  fontWeight: 700,
                 }}
                 onClick={() => {
                   setMessages([initMessage]);
@@ -397,6 +462,7 @@ export const ChatBotContainer = ({ config }: IProps) => {
                   width: "80%",
                   cursor: "pointer",
                   border: `1px solid gray`,
+                  fontWeight: 700,
                 }}
                 onClick={() => setShowConfirmReset(false)}
               >

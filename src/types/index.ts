@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export interface ChatbotConfig {
+export interface ChatbotConfig extends CSSStyle {
   botId: string;
   greeting?: string;
-  position?: "bottom-right" | "bottom-left";
   theme?: "light" | "dark";
   fabIcon?: string; // icon bubble
   botAvatar?: string; // avatar bot
@@ -10,7 +9,18 @@ export interface ChatbotConfig {
   primaryColor?: string;
   headerStyle?: Partial<CSSStyle>; // CSS cho header
   chatWindowStyle?: Partial<CSSStyle>; // CSS cho message body
-  footerStyle?: Partial<CSSStyle>; // CSS cho input + button
+  footerStyle?: {
+    inputStyle?: Partial<CSSStyle>;
+    iconStyle?: Partial<CSSStyle>;
+    width?: string | number;
+    height?: string | number;
+    fontSize?: number;
+    borderRadius?: number;
+    background?: string;
+    color?: string;
+    padding?: string | number;
+    [key: string]: any;
+  }; // CSS cho input + button
   bubbleStyle?: Partial<CSSStyle>; // CSS cho FAB bubble
   apiHost?: string; // <-- Thêm apiHost
   autoShowDelay?: number;
