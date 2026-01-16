@@ -37,3 +37,8 @@ interface CSSStyle {
   padding?: string | number;
   [key: string]: any;
 }
+
+export interface Message {
+  from: "user" | "bot" | "botLoading";
+  text: string;
+}

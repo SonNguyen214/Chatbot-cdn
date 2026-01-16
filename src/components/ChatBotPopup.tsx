@@ -53,7 +53,10 @@ const ChatbotPopup: React.FC<{ config: ChatbotConfig }> = ({ config }) => {
       ></div>
 
       <AnimatePresence>
-        <ChatBotContainer config={popupConfig} />
+        <ChatBotContainer
+          config={popupConfig}
+          setClosePopup={() => setOpen(false)}
+        />
       </AnimatePresence>
     </div>
   ) : (

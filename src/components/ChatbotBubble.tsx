@@ -44,7 +44,12 @@ const ChatbotBubble: React.FC<{ config: ChatbotConfig }> = ({ config }) => {
       </div>
 
       <AnimatePresence>
-        {open && <ChatBotContainer config={config} />}
+        {open && (
+          <ChatBotContainer
+            config={config}
+            setClosePopup={() => setOpen(false)}
+          />
+        )}
       </AnimatePresence>
     </div>
   );
