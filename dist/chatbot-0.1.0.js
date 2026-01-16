@@ -55153,7 +55153,7 @@ const QG = () => {
         console.error(ye), h((se) => [...se.filter((fe) => fe.from !== "botLoading"), { from: "bot", text: "Bot gặp lỗi, thử lại sau" }]);
       }
     }
-  }, j = $e.useMemo(() => s?.some((F) => F.from === "botLoading"), [s]), V = (F) => {
+  }, j = $e.useMemo(() => s?.some((F) => F?.from === "botLoading"), [s]), V = (F) => {
     F.key === "Enter" && U(d);
   }, Q = t.position === "bottom-left" ? { left: 20, right: "auto" } : { right: 20, left: "auto" };
   return /* @__PURE__ */ yt.jsxs(
@@ -55243,7 +55243,7 @@ const QG = () => {
             },
             children: [
               /* @__PURE__ */ yt.jsx(T2, { initial: !1, children: s.map((F, ye) => {
-                const se = F.from === "bot" || F.from === "botLoading";
+                const se = F?.from === "bot" || F?.from === "botLoading";
                 return /* @__PURE__ */ yt.jsxs(
                   ep.div,
                   {
@@ -55254,8 +55254,8 @@ const QG = () => {
                     style: {
                       display: "flex",
                       gap: 8,
-                      alignSelf: F.from === "user" ? "flex-end" : "flex-start",
-                      justifyContent: F.from === "user" ? "flex-end" : "flex-start",
+                      alignSelf: F?.from === "user" ? "flex-end" : "flex-start",
+                      justifyContent: F?.from === "user" ? "flex-end" : "flex-start",
                       maxWidth: "100%",
                       width: "100%"
                     },
@@ -55273,8 +55273,8 @@ const QG = () => {
                         {
                           className: "message-content",
                           style: {
-                            background: F.from === "user" ? A : "#eee",
-                            color: F.from === "user" ? D : "#000",
+                            background: F?.from === "user" ? A : "#eee",
+                            color: F?.from === "user" ? D : "#000",
                             padding: "0px 12px",
                             borderRadius: 12,
                             maxWidth: "63%",
@@ -55282,10 +55282,10 @@ const QG = () => {
                             minHeight: "30px",
                             wordSpacing: "1.2px",
                             lineHeight: "1.4",
-                            alignItems: F.from === "botLoading" ? "center" : "normal",
-                            display: F.from === "botLoading" ? "flex" : "block"
+                            alignItems: F?.from === "botLoading" ? "center" : "normal",
+                            display: F?.from === "botLoading" ? "flex" : "block"
                           },
-                          children: F.from === "botLoading" ? /* @__PURE__ */ yt.jsx(QG, {}) : /* @__PURE__ */ yt.jsx(
+                          children: F?.from === "botLoading" ? /* @__PURE__ */ yt.jsx(QG, {}) : /* @__PURE__ */ yt.jsx(
                             ep.div,
                             {
                               initial: { opacity: 0, y: 10 },
@@ -55297,7 +55297,7 @@ const QG = () => {
                                 {
                                   remarkPlugins: [dG],
                                   rehypePlugins: [FG],
-                                  children: F.text
+                                  children: F?.text
                                 }
                               )
                             },
@@ -55329,7 +55329,6 @@ const QG = () => {
               {
                 style: {
                   border: "1px solid #ccc",
-                  padding: 15,
                   borderRadius: 8,
                   alignItems: "center",
                   display: "flex",
@@ -55349,8 +55348,10 @@ const QG = () => {
                       placeholder: "Nhập tin nhắn...",
                       style: {
                         fontSize: 14,
+                        borderRadius: 8,
                         border: "none",
                         outline: "none",
+                        padding: 15,
                         width: "85%",
                         cursor: j ? "not-allowed" : "text"
                       }

@@ -81,7 +81,7 @@ export const ChatBotContainer = ({ config }: IProps) => {
   };
 
   const isLoading = useMemo(() => {
-    return messages?.some((msg) => msg.from === "botLoading");
+    return messages?.some((msg) => msg?.from === "botLoading");
   }, [messages]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -173,7 +173,7 @@ export const ChatBotContainer = ({ config }: IProps) => {
       >
         <AnimatePresence initial={false}>
           {messages.map((msg, idx) => {
-            const isBot = msg.from === "bot" || msg.from === "botLoading";
+            const isBot = msg?.from === "bot" || msg?.from === "botLoading";
             return (
               <motion.div
                 key={idx}
@@ -184,9 +184,9 @@ export const ChatBotContainer = ({ config }: IProps) => {
                 style={{
                   display: "flex",
                   gap: 8,
-                  alignSelf: msg.from === "user" ? "flex-end" : "flex-start",
+                  alignSelf: msg?.from === "user" ? "flex-end" : "flex-start",
                   justifyContent:
-                    msg.from === "user" ? "flex-end" : "flex-start",
+                    msg?.from === "user" ? "flex-end" : "flex-start",
                   maxWidth: "100%",
                   width: "100%",
                 }}
@@ -201,8 +201,8 @@ export const ChatBotContainer = ({ config }: IProps) => {
                 <div
                   className="message-content"
                   style={{
-                    background: msg.from === "user" ? primaryColor : "#eee",
-                    color: msg.from === "user" ? textColor : "#000",
+                    background: msg?.from === "user" ? primaryColor : "#eee",
+                    color: msg?.from === "user" ? textColor : "#000",
                     padding: "0px 12px",
                     borderRadius: 12,
                     maxWidth: "63%",
@@ -210,11 +210,12 @@ export const ChatBotContainer = ({ config }: IProps) => {
                     minHeight: "30px",
                     wordSpacing: "1.2px",
                     lineHeight: "1.4",
-                    alignItems: msg.from === "botLoading" ? "center" : "normal",
-                    display: msg.from === "botLoading" ? "flex" : "block",
+                    alignItems:
+                      msg?.from === "botLoading" ? "center" : "normal",
+                    display: msg?.from === "botLoading" ? "flex" : "block",
                   }}
                 >
-                  {msg.from === "botLoading" ? (
+                  {msg?.from === "botLoading" ? (
                     <TypingDots />
                   ) : (
                     <motion.div
@@ -228,7 +229,7 @@ export const ChatBotContainer = ({ config }: IProps) => {
                         remarkPlugins={[remarkMath]}
                         rehypePlugins={[rehypeKatex]}
                       >
-                        {msg.text}
+                        {msg?.text}
                       </ReactMarkdown>
                     </motion.div>
                   )}
@@ -252,7 +253,6 @@ export const ChatBotContainer = ({ config }: IProps) => {
         <div
           style={{
             border: "1px solid #ccc",
-            padding: 15,
             borderRadius: 8,
             alignItems: "center",
             display: "flex",
@@ -270,8 +270,10 @@ export const ChatBotContainer = ({ config }: IProps) => {
             placeholder="Nhập tin nhắn..."
             style={{
               fontSize: 14,
+              borderRadius: 8,
               border: "none",
               outline: `none`,
+              padding: 15,
               width: "85%",
               cursor: isLoading ? "not-allowed" : "text",
             }}
