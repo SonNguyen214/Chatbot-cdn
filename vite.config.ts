@@ -11,7 +11,7 @@ export default defineConfig({
       entry: "src/main.tsx",
       name: "Chatbot",
       formats: ["es"],
-      fileName: "chatbot-0.1.2",
+      fileName: "chatbot-0.1.3",
     },
     minify: "esbuild", // MINIFY
     sourcemap: false,
