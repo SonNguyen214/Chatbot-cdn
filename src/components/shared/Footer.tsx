@@ -70,7 +70,7 @@ const Footer = ({ messages, setMessages, config, primaryColor }: IProps) => {
       className="footer"
       style={{
         padding: "10px 16px",
-        paddingBottom: "4px",
+        paddingBottom: 0,
         borderTop: "1px solid #eee",
         ...config.footerStyle,
       }}
@@ -167,7 +167,7 @@ const Footer = ({ messages, setMessages, config, primaryColor }: IProps) => {
         style={{
           width: "100%",
           textAlign: "center",
-          paddingBottom: "6px",
+          padding: "5px 0",
           fontSize: "12px",
           color: "#A59C96",
         }}

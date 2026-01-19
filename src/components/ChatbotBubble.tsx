@@ -2,13 +2,16 @@ import React, { useState } from "react";
 import type { ChatbotConfig } from "../types";
 import { AnimatePresence } from "framer-motion";
 import ChatBotContainer from "./shared/ChatBotContainer";
+import logo from "../../assets/logo.png";
 
 const ChatbotBubble: React.FC<{ config: ChatbotConfig }> = ({ config }) => {
   const [open, setOpen] = useState(false);
 
-  const bubbleBg = config.bubbleStyle?.background || "#ffc600";
+  const theme = config.theme || "light";
+  const bgColor = theme === "dark" ? "#1f1f1f" : "#fff";
   const bubbleWidth = (config.bubbleStyle?.width as number) || 60;
   const bubbleHeight = (config.bubbleStyle?.height as number) || 60;
+  const primaryColor = config?.primaryColor || "#ffc600";
 
   const positionStyle =
     config.position === "bottom-left"
@@ -26,7 +29,7 @@ const ChatbotBubble: React.FC<{ config: ChatbotConfig }> = ({ config }) => {
           width: bubbleWidth,
           height: bubbleHeight,
           borderRadius: config.bubbleStyle?.borderRadius || "50%",
-          background: bubbleBg,
+          background: bgColor,
           cursor: "pointer",
           display: "flex",
           justifyContent: "center",
@@ -36,11 +39,24 @@ const ChatbotBubble: React.FC<{ config: ChatbotConfig }> = ({ config }) => {
           transition: "transform 0.2s",
           transform: open ? "scale(0.95)" : "scale(1)",
           zIndex: 999999,
+          padding: 2,
+          border: `1px solid ${primaryColor}`,
           ...positionStyle,
           ...config.bubbleStyle,
         }}
       >
-        {config.fabIcon || "💬"}
+        {config?.fabIcon?.startsWith("http") || !config?.fabIcon ? (
+          <img
+            src={config.fabIcon || logo}
+            alt="fab-icon"
+            style={{
+              width: "90%",
+              height: "90%",
+            }}
+          />
+        ) : (
+          config?.fabIcon
+        )}
       </div>
 
       <AnimatePresence>

@@ -5,6 +5,7 @@ import rehypeKatex from "rehype-katex";
 import { motion, AnimatePresence } from "framer-motion";
 import TypingDots from "./TypingDots";
 import type { Ref } from "react";
+import logo from "../../../assets/logo.png";
 
 interface IProps {
   config: ChatbotConfig;
@@ -23,6 +24,7 @@ const Messages = ({ config, messages, messagesEndRef }: IProps) => {
         display: "flex",
         flexDirection: "column",
         gap: 12,
+        marginBottom: 50,
         fontSize: config.chatWindowStyle?.fontSize || 14,
         ...config?.chatWindowStyle,
       }}
@@ -34,18 +36,27 @@ const Messages = ({ config, messages, messagesEndRef }: IProps) => {
           justifyContent: "center",
           alignItems: "center",
           flexDirection: "column",
+          textAlign: "center",
           gap: 12,
         }}
       >
         <img
           className="avatar-in-window"
-          src={config.botAvatar}
+          src={config.botAvatar || logo}
           alt="Bot"
-          style={{ width: 75, height: 60, borderRadius: "50%" }}
+          style={{ width: 60, height: 60, borderRadius: "50%" }}
         />
-        <p className="name-in-window" style={{ fontSize: 16, fontWeight: 600 }}>
+        <div
+          className="name-in-window"
+          style={{ fontSize: 16, fontWeight: 600 }}
+        >
           {config?.botName}
-        </p>
+        </div>
+        {config?.botDescription && (
+          <div style={{ fontSize: 13, fontWeight: 500, maxWidth: 350 }}>
+            {config?.botDescription || "Trợ lý ảo Mipo"}
+          </div>
+        )}
       </div>
 
       <AnimatePresence initial={false}>
@@ -71,7 +82,7 @@ const Messages = ({ config, messages, messagesEndRef }: IProps) => {
               {isBot && config.botAvatar && (
                 <img
                   className="message-avatar"
-                  src={config.botAvatar}
+                  src={config.botAvatar || logo}
                   style={{ width: 30, height: 30, borderRadius: "50%" }}
                 />
               )}

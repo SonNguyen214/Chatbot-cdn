@@ -80,27 +80,29 @@ const PopupReset = ({
               textAlign: "center",
               width: "80%",
               cursor: "pointer",
-              backgroundColor: "#f8db74",
+              backgroundColor: "#f7e08f",
               fontWeight: 700,
+              border: "none",
             }}
             onClick={handleClick}
           >
             Tạo mới
           </motion.button>
-          <button
+          <motion.button
+            whileHover={{ background: "#d3d3d3" }}
             style={{
               height: "40px",
               borderRadius: "8px",
               textAlign: "center",
               width: "80%",
               cursor: "pointer",
-              border: `1px solid gray`,
+              border: `1px solid #cbcbcb`,
               fontWeight: 700,
             }}
             onClick={() => setShowConfirmReset(false)}
           >
             Huỷ
-          </button>
+          </motion.button>
         </div>
       </motion.div>
     </motion.div>

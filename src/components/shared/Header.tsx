@@ -1,5 +1,6 @@
 import type { ChatbotConfig } from "../../types";
 import { motion } from "framer-motion";
+import logo from "../../../assets/logo.png";
 
 interface IProps {
   config: ChatbotConfig;
@@ -30,16 +31,42 @@ const Header = ({
         ...config.headerStyle,
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        {config.botAvatar && (
-          <img
-            className="chat-avatar"
-            src={config.botAvatar}
-            alt="Bot"
-            style={{ width: 40, height: 40, borderRadius: "50%" }}
-          />
-        )}
-        <span>{config?.botName || "VnpostBot"}</span>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          minWidth: "80%",
+        }}
+      >
+        <img
+          className="chat-avatar"
+          src={config?.botAvatar || logo}
+          alt="Bot"
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: "50%",
+            background: "#fff",
+          }}
+        />
+        <div style={{ display: "flex", flexDirection: "column", width: "85%" }}>
+          <span>{config?.botName || "VnpostBot"}</span>
+          {config?.botDescription && (
+            <span
+              style={{
+                fontSize: 13,
+                fontWeight: 500,
+                maxWidth: "100%",
+                textOverflow: "ellipsis",
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {config?.botDescription || "Trợ lý ảo Mipo"}
+            </span>
+          )}
+        </div>
       </div>
 
       <motion.div

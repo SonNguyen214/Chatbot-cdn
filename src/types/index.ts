@@ -25,6 +25,7 @@ export interface ChatbotConfig extends CSSStyle {
   apiHost?: string; // <-- Thêm apiHost
   autoShowDelay?: number;
   fontFamily?: string;
+  botDescription?: string;
 }
 
 interface CSSStyle {
