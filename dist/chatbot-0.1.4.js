@@ -55394,7 +55394,6 @@ const JG = () => {
       display: "flex",
       flexDirection: "column",
       gap: 12,
-      marginBottom: 50,
       fontSize: t.chatWindowStyle?.fontSize || 14,
       ...t?.chatWindowStyle
     },
@@ -55409,7 +55408,8 @@ const JG = () => {
             alignItems: "center",
             flexDirection: "column",
             textAlign: "center",
-            gap: 12
+            gap: 12,
+            marginBottom: 50
           },
           children: [
             /* @__PURE__ */ lt.jsx(
@@ -55518,7 +55518,7 @@ const JG = () => {
       background: t.headerStyle?.background || l,
       color: t.headerStyle?.color || "#333",
       padding: t.headerStyle?.padding || "10px 16px",
-      fontSize: t.headerStyle?.fontSize || 18,
+      fontSize: t.headerStyle?.fontSize || 16,
       fontWeight: "bold",
       display: "flex",
       alignItems: "center",
@@ -55552,7 +55552,7 @@ const JG = () => {
               }
             ),
             /* @__PURE__ */ lt.jsxs("div", { style: { display: "flex", flexDirection: "column", width: "85%" }, children: [
-              /* @__PURE__ */ lt.jsx("span", { children: t?.botName || "VnpostBot" }),
+              /* @__PURE__ */ lt.jsx("span", { children: t?.botName || "MipoBot" }),
               t?.botDescription && /* @__PURE__ */ lt.jsx(
                 "span",
                 {

@@ -22,7 +22,7 @@ const Header = ({
         background: config.headerStyle?.background || primaryColor,
         color: config.headerStyle?.color || "#333",
         padding: config.headerStyle?.padding || "10px 16px",
-        fontSize: config.headerStyle?.fontSize || 18,
+        fontSize: config.headerStyle?.fontSize || 16,
         fontWeight: "bold",
         display: "flex",
         alignItems: "center",
@@ -51,7 +51,7 @@ const Header = ({
           }}
         />
         <div style={{ display: "flex", flexDirection: "column", width: "85%" }}>
-          <span>{config?.botName || "VnpostBot"}</span>
+          <span>{config?.botName || "MipoBot"}</span>
           {config?.botDescription && (
             <span
               style={{

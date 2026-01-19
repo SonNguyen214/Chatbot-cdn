@@ -24,7 +24,6 @@ const Messages = ({ config, messages, messagesEndRef }: IProps) => {
         display: "flex",
         flexDirection: "column",
         gap: 12,
-        marginBottom: 50,
         fontSize: config.chatWindowStyle?.fontSize || 14,
         ...config?.chatWindowStyle,
       }}
@@ -38,6 +37,7 @@ const Messages = ({ config, messages, messagesEndRef }: IProps) => {
           flexDirection: "column",
           textAlign: "center",
           gap: 12,
+          marginBottom: 50,
         }}
       >
         <img
