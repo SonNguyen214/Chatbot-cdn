@@ -35925,9 +35925,12 @@ const {
                 {
                   ref: d,
                   value: s,
-                  onChange: (b) => !g && h(b.target.value),
+                  onChange: (b) => h(b.target.value),
                   onKeyDown: (b) => {
-                    b.key === "Enter" && !b.shiftKey && (b.preventDefault(), v(s));
+                    if (b.key === "Enter" && !b.shiftKey) {
+                      if (g) return;
+                      b.preventDefault(), v(s);
+                    }
                   },
                   placeholder: "Nhập tin nhắn...",
                   style: {

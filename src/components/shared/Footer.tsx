@@ -93,9 +93,10 @@ const Footer = ({ messages, setMessages, config, primaryColor }: IProps) => {
         <textarea
           ref={inputRef}
           value={input}
-          onChange={(e) => !isLoading && setInput(e.target.value)}
+          onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
+              if (isLoading) return;
               e.preventDefault(); // Enter bình thường gửi tin, Shift+Enter xuống dòng
               sendMessage(input);
             }
